@@ -3,12 +3,12 @@
 
     <item
         android:id="@+id/navigation_schedule"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@android:drawable/ic_menu_crop"
         android:title="@string/title_schedule" />
 
     <item
         android:id="@+id/navigation_chat"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@android:drawable/stat_notify_chat"
         android:title="@string/title_chat" />
 
 </menu>
