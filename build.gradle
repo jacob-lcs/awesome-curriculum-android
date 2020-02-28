@@ -3,7 +3,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         
     }
     dependencies {
@@ -16,8 +16,12 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
-        
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com/' }
+        maven { url "https://dl.google.com/dl/android/maven2/" }
+        maven {url 'https://dl.bintray.com/jetbrains/anko'} //这是你需要加入的，这个是解决这个问题的关键地方，我就是添加这个maven后不再报上面的错误了
     }
 }
 
