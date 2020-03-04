@@ -1,13 +1,11 @@
 package com.example.awesomecurriculum.ui.schedule;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -16,9 +14,15 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.awesomecurriculum.R;
-import com.example.awesomecurriculum.ui.login.LoginActivity;
 
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment extends Fragment{
+    private int maxCoursesNumber = 0;
+    private int currentCoursesNumber = 0;
+    public static final String AD_URL = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545749786636&di=fd5483be8b08b2e1f0485e772dadace4&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F5f9fae85770bb289f790e08d778516d128f0492a114a8-TNyOSi_fw658";
+
+
+    private LinearLayout layout;
+    private TextView titleTextView;
 
     private ScheduleViewModel homeViewModel;
 
@@ -28,15 +32,11 @@ public class ScheduleFragment extends Fragment {
         homeViewModel =
                 ViewModelProviders.of(this).get(ScheduleViewModel.class);
         View root = inflater.inflate(R.layout.fragment_schedule, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
             }
         });
-
-
 
         return root;
     }
@@ -44,13 +44,25 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button navigateTest = (Button) getActivity().findViewById(R.id.id_navigate_test);
-        navigateTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
+        createLeftView(13);
+    }
+
+    //创建左视图
+    private void createLeftView(int n) {
+        int endNumber = n;
+        if (endNumber > maxCoursesNumber) {
+            for (int i = 0; i < endNumber - maxCoursesNumber; i++) {
+                View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_left_view, null);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(110, 180);
+                view.setLayoutParams(params);
+
+                TextView text = view.findViewById(R.id.class_number_text);
+                text.setText(String.valueOf(++currentCoursesNumber));
+
+                LinearLayout leftViewLayout = getActivity().findViewById(R.id.left_view_layout);
+                leftViewLayout.addView(view);
             }
-        });
+            maxCoursesNumber = endNumber;
+        }
     }
 }
