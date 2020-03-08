@@ -44,25 +44,26 @@ public class ScheduleFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        createLeftView(13);
+        createLeftView();
     }
 
-    //创建左视图
-    private void createLeftView(int n) {
-        int endNumber = n;
-        if (endNumber > maxCoursesNumber) {
-            for (int i = 0; i < endNumber - maxCoursesNumber; i++) {
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_left_view, null);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(110, 180);
-                view.setLayoutParams(params);
+    /** 创建左视图 */
+    private void createLeftView() {
+        // 最多有多少节课
+        int num = 14;
+        for (int i = 0; i < num; i++) {
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_left_view, null);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(110, 180);
+            view.setLayoutParams(params);
 
-                TextView text = view.findViewById(R.id.class_number_text);
-                text.setText(String.valueOf(++currentCoursesNumber));
+            TextView text = view.findViewById(R.id.class_number_text);
+            text.setText(String.valueOf(++currentCoursesNumber));
 
-                LinearLayout leftViewLayout = getActivity().findViewById(R.id.left_view_layout);
-                leftViewLayout.addView(view);
-            }
-            maxCoursesNumber = endNumber;
+            LinearLayout leftViewLayout = getActivity().findViewById(R.id.left_view_layout);
+            leftViewLayout.addView(view);
         }
     }
+
+    /** 获取数据库中的课表数据 */
+
 }
