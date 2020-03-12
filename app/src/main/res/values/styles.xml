@@ -9,4 +9,9 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    p<style name="AppWelcome" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/start_page</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>
