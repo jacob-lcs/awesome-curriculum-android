@@ -1,12 +1,8 @@
 package com.example.awesomecurriculum.data;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.awesomecurriculum.MainActivity;
 import com.example.awesomecurriculum.data.model.LoggedInUser;
-import com.example.awesomecurriculum.utils.DatabaseHelper;
 import com.example.awesomecurriculum.utils.OkHttpUtil;
 import com.example.awesomecurriculum.utils.ThreadPoolManager;
 import com.google.gson.Gson;
@@ -22,9 +18,7 @@ import okhttp3.Response;
  * 该类处理身份验证登录凭据并检索用户信息。
  */
 public class LoginDataSource {
-    Map<String, Object> map = new HashMap<String, Object>();
-
-
+    Map map = new HashMap<String, Object>();
 
     public Result<LoggedInUser> login(final String email, final String password) {
         try {
@@ -45,7 +39,7 @@ public class LoginDataSource {
 
                         Gson gson = new Gson();
                         map = gson.fromJson(res.body().string(), map.getClass());
-                        Log.d("login", (String) map.get("username"));
+//                        Log.d("login", (String) Objects.requireNonNull(map.get("username")));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

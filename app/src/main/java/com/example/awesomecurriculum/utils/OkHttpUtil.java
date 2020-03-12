@@ -1,9 +1,14 @@
 package com.example.awesomecurriculum.utils;
 
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
+import com.example.awesomecurriculum.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
 
@@ -36,8 +41,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * @author sk
- * @time 2018/7/16
+ * @author Jacob
  * @description okHTTP 封装类
  */
 public class OkHttpUtil {
@@ -620,6 +624,19 @@ public class OkHttpUtil {
 
         String key;
         String value;
+    }
+
+    public static String getToken(Context context){
+        DatabaseHelper databaseHelper = new DatabaseHelper
+                (context, "database.db", null, 1);
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from user;", null);
+        if(cursor.getCount()==0){
+            return "null";
+        }else{
+            cursor.moveToFirst();
+            return cursor.getString(cursor.getColumnIndex("token"));
+        }
     }
 
 

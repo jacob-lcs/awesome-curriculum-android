@@ -27,10 +27,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "courseName text," +
                 "teacher text," +
                 "classRoom text," +
-                "color text," +
                 "week int," +
                 "classStart int," +
                 "classEnd int);");
+        db.execSQL("create table updateTime(" +
+                "id integer primary key," +
+                "time text);");
     }
 
     @Override
