@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,6 +65,16 @@ public class MainActivity extends AppCompatActivity {
         }
         createLeftView();
         loadData();
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.id_layout);
+//        mSwipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //模拟网络请求需要3000毫秒，请求完成，设置setRefreshing 为false
+                loadData();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     /**
@@ -100,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
      * 获取课表数据
      */
     private void loadData() {
+        clearItemCourseView();
         ArrayList<Course> coursesList = new ArrayList<>();
         final String token = OkHttpUtil.getToken(this);
         Runnable command = new Runnable() {
@@ -119,10 +132,10 @@ public class MainActivity extends AppCompatActivity {
                     String last = "0";
                     if (lastTime.getCount() != 0) {
                         last = lastTime.getString(lastTime.getColumnIndex("time"));
-                    }else{
-                        sqLiteDatabase.execSQL("insert into updateTime (id, time) values (1, "+String.valueOf(updateTimeMap.get("time"))+")");
+                    } else {
+                        sqLiteDatabase.execSQL("insert into updateTime (id, time) values (1, " + String.valueOf(updateTimeMap.get("time")) + ")");
                     }
-                    Log.d("course", last);
+                    Log.d("course", String.valueOf(updateTimeMap.get("time")));
                     if (last.compareTo(String.valueOf(updateTimeMap.get("time"))) < 0) {
                         res = OkHttpUtil.getDataSync("https://coursehelper.online:3000/api/course/queryCourse?token=" + token);
                         map = gson.fromJson(res.body().string(), map.getClass());
@@ -137,16 +150,16 @@ public class MainActivity extends AppCompatActivity {
                             sqLiteDatabase.execSQL("delete from course");
                             Log.d("course", "开始运行");
                             ArrayList<Object> response = (ArrayList<Object>) map.get("data");
-                            for(int i=0; i<response.size(); i++){
+                            for (int i = 0; i < response.size(); i++) {
                                 JsonObject returnData = new JsonParser().parse(response.get(i).toString()).getAsJsonObject();
                                 Log.d("course", String.valueOf(returnData.get("name")));
-                                sqLiteDatabase.execSQL("insert into course (id, color, courseName, teacher, classRoom, week, classStart, classEnd) values ("+
-                                        returnData.get("id")+","+returnData.get("color")+","+returnData.get("name")
-                                        +","+returnData.get("teacherName")
-                                        +","+returnData.get("room")
-                                        +","+returnData.get("week")
-                                        +","+returnData.get("start")
-                                        +","+returnData.get("time")+");");
+                                sqLiteDatabase.execSQL("insert into course (id, color, courseName, teacher, classRoom, week, classStart, classEnd) values (" +
+                                        returnData.get("id") + "," + returnData.get("color") + "," + returnData.get("name")
+                                        + "," + returnData.get("teacherName")
+                                        + "," + returnData.get("room")
+                                        + "," + returnData.get("week")
+                                        + "," + returnData.get("start")
+                                        + "," + returnData.get("time") + ");");
                             }
 
                         }
@@ -170,20 +183,38 @@ public class MainActivity extends AppCompatActivity {
                                 courses.getString(courses.getColumnIndex("teacher")),
                                 courses.getString(courses.getColumnIndex("classRoom")),
                                 courses.getInt(courses.getColumnIndex("week")),
-                                courses.getInt(courses.getColumnIndex("classStart"))+1,
-                                courses.getInt(courses.getColumnIndex("classStart"))+courses.getInt(courses.getColumnIndex("classEnd")),
+                                courses.getInt(courses.getColumnIndex("classStart")) + 1,
+                                courses.getInt(courses.getColumnIndex("classStart")) + courses.getInt(courses.getColumnIndex("classEnd")),
                                 courses.getString(courses.getColumnIndex("color")),
                                 courses.getInt(courses.getColumnIndex("id"))));
                     } while (courses.moveToNext());
                 }
                 courses.close();
-                for(int i=0; i<coursesList.size(); i++){
+                for (int i = 0; i < coursesList.size(); i++) {
                     createItemCourseView(coursesList.get(i));
                 }
                 break;
             }
         }
     }
+
+    private void clearItemCourseView(){
+        RelativeLayout monday = findViewById(R.id.monday);
+        monday.removeAllViews();
+        RelativeLayout tuesday = findViewById(R.id.monday);
+        tuesday.removeAllViews();
+        RelativeLayout wednesday = findViewById(R.id.wednesday);
+        wednesday.removeAllViews();
+        RelativeLayout thursday = findViewById(R.id.thursday);
+        thursday.removeAllViews();
+        RelativeLayout friday = findViewById(R.id.friday);
+        friday.removeAllViews();
+        RelativeLayout saturday = findViewById(R.id.saturday);
+        saturday.removeAllViews();
+        RelativeLayout weekday = findViewById(R.id.weekday);
+        weekday.removeAllViews();
+    }
+
     /**
      * 创建单个课程视图
      */
@@ -230,14 +261,10 @@ public class MainActivity extends AppCompatActivity {
                     (ViewGroup.LayoutParams.MATCH_PARENT, (course.getEnd() - course.getStart() + 1) * height - 8);
             //设置布局高度,即跨多少节课
             v.setLayoutParams(params);
-            v.setBackgroundColor(Color.parseColor("#"+course.getColor()));
+            v.setBackgroundColor(Color.parseColor("#" + course.getColor()));
             TextView text = v.findViewById(R.id.text_view);
             text.setText(course.getCourseName() + "\n" + course.getTeacher() + "\n" + course.getClassRoom());
             //显示课程名
-//            String [] a = {"#f17c67","#9966CC","#BDB76A","#008573","#FE4C40","#DE3163"};
-//            Random random = new Random();
-//            int n = random.nextInt(6);
-//            v.findViewById(R.id.CardView1).setBackgroundColor(Color.parseColor(a[n]));
             v.findViewById(R.id.CardView1).getBackground().setAlpha(200);
             day.addView(v);
 
