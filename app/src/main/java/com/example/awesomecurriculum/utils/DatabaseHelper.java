@@ -29,7 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "classRoom text," +
                 "week int," +
                 "classStart int," +
-                "classEnd int);");
+                "classEnd int," +
+                "courseNo text);");
         db.execSQL("create table updateTime(" +
                 "id integer primary key," +
                 "time text);");

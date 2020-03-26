@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".EditCourseActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/IconTextViewStyle"
+                    android:layout_width="56dp"
+                    android:layout_height="64dp"
+                    android:text=""
+                    android:textColor="#16AEA0" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="课程名称"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView"
+                    style="@style/IconTextViewStyle"
+                    android:layout_width="56dp"
+                    android:layout_height="64dp"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textColor="#16AEA0" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_teacher"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="授课老师"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/appCompatTextView2"
+                    style="@style/IconTextViewStyle"
+                    android:layout_width="56dp"
+                    android:layout_height="64dp"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textColor="#16AEA0" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_class_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="上课地点"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_color"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="?android:attr/selectableItemBackground">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/iv_color"
+                    style="@style/IconTextViewStyle"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:text="" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="-8dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@null"
+                    android:enabled="false"
+                    android:gravity="center_vertical"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="选取颜色"
+                    android:textSize="14sp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:alpha="0.5"
+                android:background="@color/grey"
+                tools:ignore="NotSibling" />
+
+            <TextView
+                android:id="@+id/add_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:paddingRight="10dp"
+                android:text="添加时间段"
+                android:textColor="@color/colorAccent" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/id_time_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/id_sure"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:text="确定" />
+
+            <Button
+                android:id="@+id/id_cancel"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:text="取消" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

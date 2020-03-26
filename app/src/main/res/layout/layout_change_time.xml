@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:id="@+id/id_change_time">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/id_time_icon"
+        style="@style/IconTextViewStyle"
+        android:layout_width="56dp"
+        android:layout_height="64dp"
+        android:layout_weight="1"
+        android:text=""
+        android:textColor="#16AEA0" />
+
+    <TextView
+        android:id="@+id/id_time"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="24dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="周一 第 1-1 节"
+        android:lines="1"
+        android:singleLine="true"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/id_time"
+        android:layout_alignBottom="@+id/id_time"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="290dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="13dp"
+        android:text="删除" />
+</RelativeLayout>

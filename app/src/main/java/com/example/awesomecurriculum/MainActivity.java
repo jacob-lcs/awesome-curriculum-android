@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.awesomecurriculum.data.model.Course;
 import com.example.awesomecurriculum.ui.login.LoginActivity;
@@ -25,15 +26,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import okhttp3.Response;
@@ -66,15 +62,20 @@ public class MainActivity extends AppCompatActivity {
         createLeftView();
         loadData();
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.id_layout);
-//        mSwipeRefreshLayout.setRefreshing(true);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //模拟网络请求需要3000毫秒，请求完成，设置setRefreshing 为false
                 loadData();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadData();
+
     }
 
     /**
@@ -119,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.d("login", "进入子线程");
-                OkHttpUtil.Param[] data = new OkHttpUtil.Param[2];
                 Response res;
                 try {
                     SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
@@ -135,7 +135,11 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         sqLiteDatabase.execSQL("insert into updateTime (id, time) values (1, " + String.valueOf(updateTimeMap.get("time")) + ")");
                     }
+                    if(last == null){
+                        last = "0";
+                    }
                     Log.d("course", String.valueOf(updateTimeMap.get("time")));
+                    Log.d("login", String.valueOf("测试"+ updateTimeMap.get("time"))+"测试"+ last);
                     if (last.compareTo(String.valueOf(updateTimeMap.get("time"))) < 0) {
                         res = OkHttpUtil.getDataSync("https://coursehelper.online:3000/api/course/queryCourse?token=" + token);
                         map = gson.fromJson(res.body().string(), map.getClass());
@@ -153,13 +157,14 @@ public class MainActivity extends AppCompatActivity {
                             for (int i = 0; i < response.size(); i++) {
                                 JsonObject returnData = new JsonParser().parse(response.get(i).toString()).getAsJsonObject();
                                 Log.d("course", String.valueOf(returnData.get("name")));
-                                sqLiteDatabase.execSQL("insert into course (id, color, courseName, teacher, classRoom, week, classStart, classEnd) values (" +
+                                sqLiteDatabase.execSQL("insert into course (id, color, courseName, teacher, classRoom, week, classStart, classEnd, courseNo) values (" +
                                         returnData.get("id") + "," + returnData.get("color") + "," + returnData.get("name")
                                         + "," + returnData.get("teacherName")
                                         + "," + returnData.get("room")
                                         + "," + returnData.get("week")
                                         + "," + returnData.get("start")
-                                        + "," + returnData.get("time") + ");");
+                                        + "," + returnData.get("time")
+                                        + "," + returnData.get("courseNo") + ");");
                             }
 
                         }
@@ -186,7 +191,8 @@ public class MainActivity extends AppCompatActivity {
                                 courses.getInt(courses.getColumnIndex("classStart")) + 1,
                                 courses.getInt(courses.getColumnIndex("classStart")) + courses.getInt(courses.getColumnIndex("classEnd")),
                                 courses.getString(courses.getColumnIndex("color")),
-                                courses.getInt(courses.getColumnIndex("id"))));
+                                courses.getInt(courses.getColumnIndex("id")),
+                                courses.getString(courses.getColumnIndex("courseNo"))));
                     } while (courses.moveToNext());
                 }
                 courses.close();
@@ -201,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     private void clearItemCourseView(){
         RelativeLayout monday = findViewById(R.id.monday);
         monday.removeAllViews();
-        RelativeLayout tuesday = findViewById(R.id.monday);
+        RelativeLayout tuesday = findViewById(R.id.tuesday);
         tuesday.removeAllViews();
         RelativeLayout wednesday = findViewById(R.id.wednesday);
         wednesday.removeAllViews();
@@ -265,9 +271,19 @@ public class MainActivity extends AppCompatActivity {
             TextView text = v.findViewById(R.id.text_view);
             text.setText(course.getCourseName() + "\n" + course.getTeacher() + "\n" + course.getClassRoom());
             //显示课程名
-            v.findViewById(R.id.CardView1).getBackground().setAlpha(200);
+            v.findViewById(R.id.id_course_card).getBackground().setAlpha(200);
             day.addView(v);
-
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toEditDetail(course.getCourseName(), course.getWeek(), course.getStart(), course.getEnd(), course.getTeacher(), course.getClassRoom(), course.getColor(), course.getId(), course.getCourseNo());
+                }
+            });
         }
+    }
+
+    private void toEditDetail(String courseName, int week, int start, int end, String teacher, String classRoom, String color, int id, String courseNo){
+        final CourseDetailFragment editNameDialogFragment = CourseDetailFragment.newInstance(courseName, week, start, end, teacher, classRoom, color, id, courseNo);
+        editNameDialogFragment.show(getSupportFragmentManager(), "edit");
     }
 }

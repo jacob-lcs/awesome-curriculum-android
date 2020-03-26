@@ -9,9 +9,28 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    p<style name="AppWelcome" parent="AppTheme">
+    <style name="AppWelcome" parent="AppTheme">
         <item name="android:windowBackground">@drawable/start_page</item>
         <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="cornerRadius">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ButtonBackground">
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="IconTextViewStyle">
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontFamily">@font/iconfont</item>
     </style>
 
 </resources>

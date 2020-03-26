@@ -8,12 +8,13 @@ public class Course implements Serializable {
     private String courseName;
     private String teacher;
     private String classRoom;
+    private String courseNo;
     private int week;
     private int classStart;
     private int classEnd;
     private int id;
 
-    public Course(String courseName, String teacher, String classRoom, int week, int classStart, int classEnd, String color, int id) {
+    public Course(String courseName, String teacher, String classRoom, int week, int classStart, int classEnd, String color, int id, String courseNo) {
         this.courseName = courseName;
         this.teacher = teacher;
         this.classRoom = classRoom;
@@ -22,6 +23,7 @@ public class Course implements Serializable {
         this.classEnd = classEnd;
         this.color = color;
         this.id = id;
+        this.courseNo = courseNo;
     }
 
     public String getCourseName() {
@@ -86,6 +88,14 @@ public class Course implements Serializable {
 
     public int getId(){
         return id;
+    }
+
+    public void setCourseNo(String value){
+        this.courseNo = value;
+    }
+
+    public String getCourseNo(){
+        return this.courseNo;
     }
 
 }
