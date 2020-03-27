@@ -5,6 +5,8 @@
     android:id="@+id/id_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <!--背景图-->
+
             <ImageView
                 android:id="@+id/bg"
                 android:layout_width="match_parent"
@@ -27,6 +31,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <include
+                    android:id="@+id/main_head"
+                    layout="@layout/activity_tool_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
 
                 <!--星期条-->
                 <LinearLayout

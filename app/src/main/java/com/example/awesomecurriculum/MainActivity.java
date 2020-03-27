@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,6 +41,12 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     Map map = new HashMap<String, Object>();
     Map updateTimeMap = new HashMap<String, Object>();
+
+
+    private ImageView settings;
+    private ImageView imports;
+    private ImageView chat;
+    private ImageView add;
     /**
      * 星期几
      */
@@ -61,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         }
         createLeftView();
         loadData();
+        init();
         final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.id_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -75,7 +83,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         loadData();
+    }
 
+    private void init(){
+        settings = findViewById(R.id.settings);
+        imports = findViewById(R.id.imports);
+        chat = findViewById(R.id.chat);
+        add = findViewById(R.id.add);
+        toSettings();
+        toAddCourse();
+    }
+
+    private void toSettings(){
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void toAddCourse(){
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, EditCourseActivity.class);
+                intent.putExtra("courseName", "");
+                intent.putExtra("teacher", "");
+                intent.putExtra("classRoom", "");
+                intent.putExtra("week", 1);
+                intent.putExtra("start", 1);
+                intent.putExtra("end", 1);
+                intent.putExtra("color", "FAFAFA");
+                intent.putExtra("id", 0);
+                intent.putExtra("courseNo", "");
+                startActivity(intent);
+            }
+        });
     }
 
     /**

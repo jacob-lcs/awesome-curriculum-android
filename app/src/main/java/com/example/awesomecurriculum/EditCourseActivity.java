@@ -210,7 +210,12 @@ public class EditCourseActivity extends AppCompatActivity {
                     data1[5] = new OkHttpUtil.Param("timeList", timeList.toString());
                     String c = Integer.toHexString(color).toString();
                     data1[6] = new OkHttpUtil.Param("color", c.substring(2, c.length()));
-                    res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/course/updateCourse?token=" + token, data1);
+                    if(id!=0){
+                        res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/course/updateCourse?token=" + token, data1);
+                    }else{
+                        res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/course/addCourse?token=" + token, data1);
+                    }
+
                     map = gson.fromJson(res.body().string(), map.getClass());
                     String codeString = "code";
                     if ((double) map.get(codeString) == 0) {
