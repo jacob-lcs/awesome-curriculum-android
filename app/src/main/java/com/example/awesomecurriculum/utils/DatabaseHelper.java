@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "username text," +
                 "avatar text," +
                 "token text," +
+                "school text," +
                 "email text)");
         // 课程数据表
         db.execSQL("create table course(" +
@@ -33,6 +34,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "courseNo text);");
         db.execSQL("create table updateTime(" +
                 "id integer primary key," +
+                "time text);");
+
+        db.execSQL("create table message(" +
+                "id integer primary key," +
+                "fromUserName text," +
+                "fromUserAvatar text," +
+                "content text," +
+                "toGroup text," +
                 "time text);");
     }
 

@@ -640,5 +640,18 @@ public class OkHttpUtil {
         }
     }
 
+    public static String getSchool(Context context){
+        DatabaseHelper databaseHelper = new DatabaseHelper
+                (context, "database.db", null, 1);
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("select * from user;", null);
+        if(cursor.getCount()==0){
+            return "null";
+        }else{
+            cursor.moveToFirst();
+            return cursor.getString(cursor.getColumnIndex("school"));
+        }
+    }
+
 
 }

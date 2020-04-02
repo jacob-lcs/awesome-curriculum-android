@@ -58,7 +58,8 @@ public class LoginDataSource {
                                     (String) map.get("username"),
                                     (String) map.get("avatar"),
                                     email,
-                                    (String) map.get("token"));
+                                    (String) map.get("token"),
+                                    (String) map.get("school"));
 
                     Log.d("login", "子线程外");
 

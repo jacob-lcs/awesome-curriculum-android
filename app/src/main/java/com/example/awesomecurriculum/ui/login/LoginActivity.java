@@ -137,12 +137,13 @@ public class LoginActivity extends AppCompatActivity {
         SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("select * from user;", null);
 
-        sqLiteDatabase.execSQL("insert into user (username, avatar, token, email) values (?, ?, ?, ?)",
+        sqLiteDatabase.execSQL("insert into user (username, avatar, token, email, school) values (?, ?, ?, ?, ?)",
                 new String[]{
                         model.getDisplayName(),
                         model.getAvatar(),
                         model.getToken(),
-                        model.getEmail()
+                        model.getEmail(),
+                        model.getSchool()
                 }
         );
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();

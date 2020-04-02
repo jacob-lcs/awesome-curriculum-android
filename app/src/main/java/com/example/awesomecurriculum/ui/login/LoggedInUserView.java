@@ -8,13 +8,15 @@ class LoggedInUserView {
     private String avatar;
     private String email;
     private String token;
+    private String school;
     //... other data fields that may be accessible to the UI
 
-    LoggedInUserView(String displayName, String avatar, String email, String token) {
+    LoggedInUserView(String displayName, String avatar, String email, String token, String school) {
         this.displayName = displayName;
         this.avatar = avatar;
         this.email = email;
         this.token = token;
+        this.school = school;
     }
 
     String getDisplayName() {
@@ -31,6 +33,10 @@ class LoggedInUserView {
 
     String getToken() {
         return token;
+    }
+
+    String getSchool() {
+        return school;
     }
 
 }

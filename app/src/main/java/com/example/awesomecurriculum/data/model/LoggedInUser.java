@@ -10,13 +10,15 @@ public class LoggedInUser {
     private String avatar;
     private String email;
     private String token;
+    private String school;
 
-    public LoggedInUser(String userId, String displayName, String avatar, String email, String token) {
+    public LoggedInUser(String userId, String displayName, String avatar, String email, String token, String school) {
         this.userId = userId;
         this.displayName = displayName;
         this.avatar = avatar;
         this.email = email;
         this.token = token;
+        this.school = school;
     }
     public String getDisplayName() {
         return displayName;
@@ -36,6 +38,10 @@ public class LoggedInUser {
 
     public String getToken() {
         return token;
+    }
+
+    public String getSchool() {
+        return school;
     }
 
 }

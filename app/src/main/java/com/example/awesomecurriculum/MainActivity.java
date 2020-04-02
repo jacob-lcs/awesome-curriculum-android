@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         add = findViewById(R.id.add);
         toSettings();
         toAddCourse();
+        toChat();
     }
 
     private void toSettings(){
@@ -99,6 +100,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void toChat(){
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
                 startActivity(intent);
             }
         });
