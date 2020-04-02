@@ -2,6 +2,8 @@ package com.example.awesomecurriculum.data;
 
 import android.util.Log;
 
+import com.example.awesomecurriculum.MainActivity;
+import com.example.awesomecurriculum.SettingsActivity;
 import com.example.awesomecurriculum.data.model.LoggedInUser;
 import com.example.awesomecurriculum.utils.OkHttpUtil;
 import com.example.awesomecurriculum.utils.ThreadPoolManager;
@@ -55,7 +57,7 @@ public class LoginDataSource {
                                     java.util.UUID.randomUUID().toString(),
                                     (String) map.get("username"),
                                     (String) map.get("avatar"),
-                                    (String) map.get("email"),
+                                    email,
                                     (String) map.get("token"));
 
                     Log.d("login", "子线程外");
@@ -70,6 +72,6 @@ public class LoginDataSource {
     }
 
     public void logout() {
-        // TODO: 撤销认证
+
     }
 }
