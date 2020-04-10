@@ -40,6 +40,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.7.0'
     implementation 'com.squareup.okio:okio:1.12.0'
     implementation 'com.google.code.gson:gson:2.8.2'
+    compile 'com.alibaba:fastjson:1.1.71.android'
     //noinspection GradleCompatible
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -49,5 +50,13 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
+    implementation 'com.github.nkzawa:socket.io-client:0.6.0'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'com.nbsp:library:1.8'
 
 }

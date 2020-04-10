@@ -1,7 +1,6 @@
 package com.example.awesomecurriculum;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,22 +10,22 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.awesomecurriculum.utils.ApplicationUtil;
 import com.example.awesomecurriculum.utils.DatabaseHelper;
 import com.example.awesomecurriculum.utils.OkHttpUtil;
 import com.example.awesomecurriculum.utils.ThreadPoolManager;
-
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
+import java.io.IOException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class ChatActivity extends AppCompatActivity {
-    private Socket mSocket;
 
     private DatabaseHelper databaseHelper = new DatabaseHelper
             (this, "database.db", null, 1);
@@ -37,10 +36,9 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         init();
-
         try {
             initSocket();
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -56,43 +54,47 @@ public class ChatActivity extends AppCompatActivity {
         ThreadPoolExecutor res = ThreadPoolManager.getInstance().execute(command);
         res.shutdown();
         SQLiteDatabase sqLiteDatabase = databaseHelper.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("select distinct courseName from course where courseNo!=''", null);
+        Cursor cursor = sqLiteDatabase.rawQuery("select distinct courseName, courseNo from course where courseNo!=''", null);
         if(cursor.moveToFirst()){
             do {
                 LinearLayout container = findViewById(R.id.id_chat_container);
                 View v = LayoutInflater.from(this).inflate(R.layout.layout_chat_item, container, false);
                 TextView groupName = v.findViewById(R.id.id_group_name);
-                groupName.setText(cursor.getString(cursor.getColumnIndex("courseName")));
+                String courseName = cursor.getString(cursor.getColumnIndex("courseName"));
+                String courseNo = cursor.getString(cursor.getColumnIndex("courseNo"));
+                groupName.setText(courseName);
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ChatActivity.this, ChatDetailActivity.class);
+                        intent.putExtra("courseName", courseName);
+                        intent.putExtra("courseNo", courseNo);
+                        startActivity(intent);
+                    }
+                });
                 container.addView(v);
             }while (cursor.moveToNext());
         }
     }
-
-    private void initSocket() throws JSONException {
+    private void initSocket() throws Exception {
+        ApplicationUtil appUtil =  (ApplicationUtil) ChatActivity.this.getApplication();
         try {
-            mSocket = IO.socket("https://coursehelper.online:5000");
-        } catch (URISyntaxException e) {
-            Log.d("error", e.toString());
-        }
-        mSocket.connect();
-        mSocket.on("open", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                try {
-                    openListener();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            appUtil.init();
+            Socket socket = appUtil.getSocket();
+            socket.on("broadcast message", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Log.d("messages", data.getString("content"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void openListener() throws JSONException {
-        JSONObject object = new JSONObject();
-        object.put("from", OkHttpUtil.getToken(this));
-        object.put("groups", "");
-        object.put("school", OkHttpUtil.getSchool(this));
-
-        mSocket.emit("binding", object);
-    }
 }

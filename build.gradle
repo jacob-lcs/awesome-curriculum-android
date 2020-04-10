@@ -22,6 +22,7 @@ allprojects {
         maven { url 'https://maven.google.com/' }
         maven { url "https://dl.google.com/dl/android/maven2/" }
         maven {url 'https://dl.bintray.com/jetbrains/anko'}
+        maven { url "https://dl.bintray.com/lukaville/maven" }
     }
 }
 
