@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -262,59 +263,62 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
                     Response res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/message/queryHistoryMessage?token=" + token, params);
                     map = gson.fromJson(res.body().string(), map.getClass());
                     message = (ArrayList) map.get("data");
-                    Log.d("messages", message.toString());
-                    ArrayList<Boolean> result = new ArrayList();
-                    List<Message> mReceiveMsgList = new ArrayList<Message>();
-                    LinkedTreeMap mm = (LinkedTreeMap) message.get(0);
-                    headMessageId = mm.get("id").toString();
-                    for (int i = 0; i < message.size(); i++) {
-                        Message mMessage = getBaseSendMessage(MsgType.TEXT);
-                        TextMsgBody mTextMsgBody = new TextMsgBody();
-                        LinkedTreeMap m = (LinkedTreeMap) message.get(i);
-                        mTextMsgBody.setMessage(m.get("content").toString());
-                        LinkedTreeMap jsonObj = (LinkedTreeMap) m.get("from");
-                        mTextMsgBody.setName(jsonObj.get("username").toString());
-                        mTextMsgBody.setTime(m.get("time").toString());
-                        mTextMsgBody.setAvatar(jsonObj.get("avatar").toString());
+                    if (message.size() != 0) {
+                        List<Message> mReceiveMsgList = new ArrayList<Message>();
+                        LinkedTreeMap mm = (LinkedTreeMap) message.get(0);
+                        headMessageId = mm.get("id").toString();
+                        for (int i = 0; i < message.size(); i++) {
+                            Message mMessage = getBaseSendMessage(MsgType.TEXT);
+                            TextMsgBody mTextMsgBody = new TextMsgBody();
+                            LinkedTreeMap m = (LinkedTreeMap) message.get(i);
+                            mTextMsgBody.setMessage(m.get("content").toString());
+                            LinkedTreeMap jsonObj = (LinkedTreeMap) m.get("from");
+                            mTextMsgBody.setName(jsonObj.get("username").toString());
+                            mTextMsgBody.setTime(m.get("time").toString());
+                            mTextMsgBody.setAvatar(jsonObj.get("avatar").toString());
 
-                        mMessage.setBody(mTextMsgBody);
-                        mReceiveMsgList.add(mMessage);
-                        OkHttpUtil.Param[] param = new OkHttpUtil.Param[1];
-                        Map maps = new HashMap<String, Object>();
-                        try {
-                            param[0] = new OkHttpUtil.Param("id", m.get("id").toString());
-                            Response response = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/message/checkMessageSendByMyself?token=" + token, param);
-                            maps = gson.fromJson(response.body().string(), maps.getClass());
-                            result.add(maps.get("res").toString().equals("true"));
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            mMessage.setBody(mTextMsgBody);
+                            if (m.get("self").toString().equals("false")) {
+                                mMessage.setSenderId("收到");
+                            }
+                            mReceiveMsgList.add(mMessage);
                         }
-                    }
-                    ChatDetailActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (int i = 0; i < mReceiveMsgList.size(); i++) {
-                                if (result.get(i)) {
-                                    mAdapter.addData(0, mReceiveMsgList.get(i));
-                                    updateMsg(mReceiveMsgList.get(i));
-                                } else {
-                                    List<Message> mReceiveMsgLists = new ArrayList<Message>();
-                                    mReceiveMsgList.get(i).setSenderId("收到");
-                                    mReceiveMsgLists.add(mReceiveMsgList.get(i));
-                                    mAdapter.addData(0, mReceiveMsgLists);
+                        ChatDetailActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for (int i = 0; i < mReceiveMsgList.size(); i++) {
+                                    if (mReceiveMsgList.get(i).getSenderId() != "收到") {
+                                        mAdapter.addData(0, mReceiveMsgList.get(i));
+                                        updateMsg(mReceiveMsgList.get(i));
+                                    } else {
+                                        List<Message> mReceiveMsgLists = new ArrayList<Message>();
+                                        mReceiveMsgList.get(i).setSenderId("收到");
+                                        mReceiveMsgLists.add(mReceiveMsgList.get(i));
+                                        mAdapter.addData(0, mReceiveMsgLists);
+                                    }
                                 }
                             }
-                        }
-                    });
-
+                        });
+                    } else {
+                        ChatDetailActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ChatDetailActivity.this, "没有更多消息了哦", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         };
 
-        ThreadPoolExecutor response = ThreadPoolManager.getInstance().execute(command);
-        response.shutdown();
+        if (headMessageId != null) {
+            ThreadPoolExecutor response = ThreadPoolManager.getInstance().execute(command);
+            response.shutdown();
+        } else {
+            Toast.makeText(ChatDetailActivity.this, "没有更多消息了哦", Toast.LENGTH_SHORT).show();
+        }
 //        //构建文本消息
 //        Message mMessgaeText = getBaseReceiveMessage(MsgType.TEXT);
 //        TextMsgBody mTextMsgBody = new TextMsgBody();
@@ -566,10 +570,11 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
                     Response res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/message/queryHistoryMessageByCourse?token=" + token, data);
                     map = gson.fromJson(res.body().string(), map.getClass());
                     message = (ArrayList) map.get("data");
-                    ArrayList<Boolean> result = new ArrayList();
                     List<Message> mReceiveMsgList = new ArrayList<Message>();
-                    LinkedTreeMap mm = (LinkedTreeMap) message.get(message.size() - 1);
-                    headMessageId = mm.get("id").toString();
+                    if (message.size() != 0) {
+                        LinkedTreeMap mm = (LinkedTreeMap) message.get(message.size() - 1);
+                        headMessageId = mm.get("id").toString();
+                    }
                     for (int i = message.size() - 1; i >= 0; i--) {
                         Message mMessage = getBaseSendMessage(MsgType.TEXT);
                         TextMsgBody mTextMsgBody = new TextMsgBody();
@@ -580,31 +585,21 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
                         mTextMsgBody.setAvatar(m.get("avatar").toString());
 
                         mMessage.setBody(mTextMsgBody);
-                        mReceiveMsgList.add(mMessage);
-                        OkHttpUtil.Param[] params = new OkHttpUtil.Param[1];
-                        Map maps = new HashMap<String, Object>();
-                        try {
-                            params[0] = new OkHttpUtil.Param("id", m.get("id").toString());
-                            Gson gson = new Gson();
-                            String token = OkHttpUtil.getToken(ChatDetailActivity.this);
-                            Response response = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/message/checkMessageSendByMyself?token=" + token, params);
-                            maps = gson.fromJson(response.body().string(), maps.getClass());
-                            result.add(maps.get("res").toString().equals("true"));
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if (m.get("self").toString().equals("false")) {
+                            mMessage.setSenderId("收到");
                         }
+                        mReceiveMsgList.add(mMessage);
                     }
 
                     ChatDetailActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             for (int i = 0; i < mReceiveMsgList.size(); i++) {
-                                if (result.get(i)) {
+                                if (mReceiveMsgList.get(i).getSenderId() != "收到") {
                                     mAdapter.addData(mReceiveMsgList.get(i));
                                     updateMsg(mReceiveMsgList.get(i));
                                 } else {
                                     List<Message> mReceiveMsgLists = new ArrayList<Message>();
-                                    mReceiveMsgList.get(i).setSenderId("收到");
                                     mReceiveMsgLists.add(mReceiveMsgList.get(i));
                                     mAdapter.addData(mReceiveMsgLists);
                                 }
