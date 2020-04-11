@@ -6,9 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
-import com.example.awesomecurriculum.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
 
@@ -16,7 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.FileNameMap;
@@ -438,6 +435,10 @@ public class OkHttpUtil {
      */
     public static void postDataAsync(String url, final ResultCallback callback, Param... params) {
         getInstance()._postDataAsync(url, callback, params);
+    }
+
+    public static Response postDataFileSync(String url, File file, String fileKey, Param... params) throws IOException {
+        return getInstance()._postDataFileSync(url, file, fileKey, params);
     }
 
     /**

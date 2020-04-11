@@ -13,17 +13,16 @@
         <RelativeLayout
             android:id="@+id/rlPhoto"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/ivPhoto"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="30dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/selector_ctype_image"
-                />
+                android:layout_marginTop="30dp"
+                android:background="@drawable/selector_ctype_image" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -32,25 +31,23 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15px"
                 android:text="相册"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </RelativeLayout>
-
 
 
         <RelativeLayout
             android:id="@+id/rlFile"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/ivFile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="30dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/selector_ctype_file"
-                />
+                android:layout_marginTop="30dp"
+                android:background="@drawable/selector_ctype_file" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -59,7 +56,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15px"
                 android:text="文件"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </RelativeLayout>
 
     </LinearLayout>

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -145,50 +146,101 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
         mSocket.on("broadcast message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                final Message mMessage = getBaseSendMessage(MsgType.TEXT);
-                TextMsgBody mTextMsgBody = new TextMsgBody();
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    mTextMsgBody.setMessage(data.getString("content"));
-                    mTextMsgBody.setTime(data.getString("time"));
-                    mTextMsgBody.setName(data.getJSONObject("from").getString("username"));
-                    mTextMsgBody.setAvatar(data.getJSONObject("from").getString("avatar"));
+                    if (data.get("type").toString().equals("text")) {
+                        final Message mMessage = getBaseSendMessage(MsgType.TEXT);
+                        TextMsgBody mTextMsgBody = new TextMsgBody();
+                        try {
+                            mTextMsgBody.setMessage(data.getString("content"));
+                            mTextMsgBody.setTime(data.getString("time"));
+                            mTextMsgBody.setName(data.getJSONObject("from").getString("username"));
+                            mTextMsgBody.setAvatar(data.getJSONObject("from").getString("avatar"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        mMessage.setBody(mTextMsgBody);
+                        OkHttpUtil.Param[] params = new OkHttpUtil.Param[1];
+                        Map map = new HashMap<String, Object>();
+                        try {
+                            params[0] = new OkHttpUtil.Param("id", data.getString("id"));
+                            Gson gson = new Gson();
+                            String token = OkHttpUtil.getToken(ChatDetailActivity.this);
+                            Response res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/message/checkMessageSendByMyself?token=" + token, params);
+                            map = gson.fromJson(res.body().string(), map.getClass());
+                        } catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Map finalMap = map;
+                        ChatDetailActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("messages", finalMap.get("res").toString());
+                                if (finalMap.get("res").toString() == "true") {
+                                    //开始发送
+                                    mAdapter.addData(mMessage);
+                                    updateMsg(mMessage);
+                                } else {
+                                    Log.d("messages", "收到了别人发来的消息");
+                                    List<Message> mReceiveMsgList = new ArrayList<Message>();
+                                    mMessage.setSenderId("收到");
+                                    mReceiveMsgList.add(mMessage);
+                                    mAdapter.addData(mReceiveMsgList);
+                                }
+                                mRvChat.scrollToPosition(mAdapter.getItemCount() - 1);
+                            }
+                        });
+                    } else if (data.get("type").toString().equals("image")) {
+                        final Message mMessage = getBaseSendMessage(MsgType.IMAGE);
+                        ImageMsgBody mTextMsgBody = new ImageMsgBody();
+                        try {
+                            mTextMsgBody.setThumbUrl(data.getString("content"));
+                            mTextMsgBody.setTime(data.getString("time"));
+                            mTextMsgBody.setName(data.getJSONObject("from").getString("username"));
+                            mTextMsgBody.setAvatar(data.getJSONObject("from").getString("avatar"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        mMessage.setBody(mTextMsgBody);
+                        OkHttpUtil.Param[] params = new OkHttpUtil.Param[1];
+                        Map map = new HashMap<String, Object>();
+                        try {
+                            params[0] = new OkHttpUtil.Param("id", data.getString("id"));
+                            Gson gson = new Gson();
+                            String token = OkHttpUtil.getToken(ChatDetailActivity.this);
+                            Response res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/message/checkMessageSendByMyself?token=" + token, params);
+                            map = gson.fromJson(res.body().string(), map.getClass());
+                        } catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Map finalMap = map;
+                        ChatDetailActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("messages", finalMap.get("res").toString());
+                                if (finalMap.get("res").toString() == "true") {
+                                    //开始发送
+                                    mAdapter.addData(mMessage);
+                                    updateMsg(mMessage);
+                                } else {
+                                    Log.d("messages", "收到了别人发来的消息");
+                                    List<Message> mReceiveMsgList = new ArrayList<Message>();
+                                    mMessage.setSenderId("收到");
+                                    mReceiveMsgList.add(mMessage);
+                                    mAdapter.addData(mReceiveMsgList);
+                                }
+                                mRvChat.scrollToPosition(mAdapter.getItemCount() - 1);
+                            }
+                        });
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                mMessage.setBody(mTextMsgBody);
-                OkHttpUtil.Param[] params = new OkHttpUtil.Param[1];
-                Map map = new HashMap<String, Object>();
-                try {
-                    params[0] = new OkHttpUtil.Param("id", data.getString("id"));
-                    Gson gson = new Gson();
-                    String token = OkHttpUtil.getToken(ChatDetailActivity.this);
-                    Response res = OkHttpUtil.postDataSync("https://coursehelper.online:3000/api/message/checkMessageSendByMyself?token=" + token, params);
-                    map = gson.fromJson(res.body().string(), map.getClass());
-                } catch (JSONException | IOException e) {
-                    e.printStackTrace();
-                }
-
-                Map finalMap = map;
-                ChatDetailActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("messages", finalMap.get("res").toString());
-                        if (finalMap.get("res").toString() == "true") {
-                            //开始发送
-                            mAdapter.addData(mMessage);
-                            updateMsg(mMessage);
-                        } else {
-                            Log.d("messages", "收到了别人发来的消息");
-                            List<Message> mReceiveMsgList = new ArrayList<Message>();
-                            mMessage.setSenderId("收到");
-                            mReceiveMsgList.add(mMessage);
-                            mAdapter.addData(mReceiveMsgList);
-                        }
-                        mRvChat.scrollToPosition(mAdapter.getItemCount() - 1);
-                    }
-                });
             }
         });
     }
@@ -267,21 +319,36 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
                         List<Message> mReceiveMsgList = new ArrayList<Message>();
                         LinkedTreeMap mm = (LinkedTreeMap) message.get(0);
                         headMessageId = mm.get("id").toString();
-                        for (int i = 0; i < message.size(); i++) {
-                            Message mMessage = getBaseSendMessage(MsgType.TEXT);
-                            TextMsgBody mTextMsgBody = new TextMsgBody();
+                        for (int i = message.size() - 1; i >= 0; i--) {
                             LinkedTreeMap m = (LinkedTreeMap) message.get(i);
-                            mTextMsgBody.setMessage(m.get("content").toString());
-                            LinkedTreeMap jsonObj = (LinkedTreeMap) m.get("from");
-                            mTextMsgBody.setName(jsonObj.get("username").toString());
-                            mTextMsgBody.setTime(m.get("time").toString());
-                            mTextMsgBody.setAvatar(jsonObj.get("avatar").toString());
+                            if (m.get("type").toString().equals("text")) {
+                                Message mMessage = getBaseSendMessage(MsgType.TEXT);
+                                TextMsgBody mTextMsgBody = new TextMsgBody();
+                                mTextMsgBody.setMessage(m.get("content").toString());
+                                LinkedTreeMap jsonObj = (LinkedTreeMap) m.get("from");
+                                mTextMsgBody.setName(jsonObj.get("username").toString());
+                                mTextMsgBody.setTime(m.get("time").toString());
+                                mTextMsgBody.setAvatar(jsonObj.get("avatar").toString());
 
-                            mMessage.setBody(mTextMsgBody);
-                            if (m.get("self").toString().equals("false")) {
-                                mMessage.setSenderId("收到");
+                                mMessage.setBody(mTextMsgBody);
+                                if (m.get("self").toString().equals("false")) {
+                                    mMessage.setSenderId("收到");
+                                }
+                                mReceiveMsgList.add(mMessage);
+                            } else if (m.get("type").toString().equals("image")) {
+                                Message mMessgaeImage = getBaseReceiveMessage(MsgType.IMAGE);
+                                ImageMsgBody mImageMsgBody = new ImageMsgBody();
+                                mImageMsgBody.setThumbUrl(m.get("content").toString());
+                                LinkedTreeMap jsonObj = (LinkedTreeMap) m.get("from");
+                                mImageMsgBody.setName(jsonObj.get("username").toString());
+                                mImageMsgBody.setTime(m.get("time").toString());
+                                mImageMsgBody.setAvatar(jsonObj.get("avatar").toString());
+                                mMessgaeImage.setBody(mImageMsgBody);
+                                if (m.get("self").toString().equals("false")) {
+                                    mMessgaeImage.setSenderId("收到");
+                                }
+                                mReceiveMsgList.add(mMessgaeImage);
                             }
-                            mReceiveMsgList.add(mMessage);
                         }
                         ChatDetailActivity.this.runOnUiThread(new Runnable() {
                             @Override
@@ -439,8 +506,39 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
                     // 图片选择结果回调
                     List<LocalMedia> selectListPic = PictureSelector.obtainMultipleResult(data);
                     for (LocalMedia media : selectListPic) {
-                        LogUtil.d("获取图片路径成功:" + media.getPath());
-                        sendImageMessage(media);
+                        File file = new File(media.getPath());
+                        Runnable command = new Runnable() {
+                            @Override
+                            public void run() {
+                                OkHttpUtil.Param[] params = new OkHttpUtil.Param[1];
+                                params[0] = new OkHttpUtil.Param("notAvatar", "true");
+                                try {
+                                    Gson gson = new Gson();
+                                    Map map = new HashMap<String, Object>();
+                                    Response res = OkHttpUtil.postDataFileSync("https://coursehelper.online:3000/api/file/uploadFile?token=" + OkHttpUtil.getToken(ChatDetailActivity.this), file, "key", params);
+                                    map = gson.fromJson(res.body().string(), map.getClass());
+                                    Log.d("images", map.toString());
+                                    String fileName = (String) map.get("fileName");
+                                    JSONObject to = new JSONObject();
+                                    to.put("name", courseName);
+                                    to.put("courseNo", courseNo);
+
+                                    JSONObject object = new JSONObject();
+                                    object.put("from", OkHttpUtil.getToken(ChatDetailActivity.this));
+                                    object.put("to", to);
+                                    object.put("school", OkHttpUtil.getSchool(ChatDetailActivity.this));
+                                    object.put("content", "https://coursehelper.online:3000/" + fileName);
+                                    object.put("type", "image");
+                                    mSocket.emit("send message", object);
+                                } catch (IOException | JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        ThreadPoolExecutor response = ThreadPoolManager.getInstance().execute(command);
+                        response.shutdown();
+//                        LogUtil.d("获取图片路径成功:" + media.getPath());
+//                        sendImageMessage(media);
                     }
                     break;
                 default:
@@ -462,6 +560,7 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
         object.put("to", to);
         object.put("school", OkHttpUtil.getSchool(this));
         object.put("content", msg);
+        object.put("type", "text");
         mSocket.emit("send message", object);
     }
 
@@ -576,19 +675,35 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
                         headMessageId = mm.get("id").toString();
                     }
                     for (int i = message.size() - 1; i >= 0; i--) {
-                        Message mMessage = getBaseSendMessage(MsgType.TEXT);
-                        TextMsgBody mTextMsgBody = new TextMsgBody();
                         LinkedTreeMap m = (LinkedTreeMap) message.get(i);
-                        mTextMsgBody.setMessage(m.get("content").toString());
-                        mTextMsgBody.setName(m.get("username").toString());
-                        mTextMsgBody.setTime(m.get("time").toString());
-                        mTextMsgBody.setAvatar(m.get("avatar").toString());
+                        if (m.get("type").toString().equals("text")) {
+                            Message mMessage = getBaseSendMessage(MsgType.TEXT);
+                            TextMsgBody mTextMsgBody = new TextMsgBody();
+                            mTextMsgBody.setMessage(m.get("content").toString());
+                            mTextMsgBody.setName(m.get("username").toString());
+                            mTextMsgBody.setTime(m.get("time").toString());
+                            mTextMsgBody.setAvatar(m.get("avatar").toString());
 
-                        mMessage.setBody(mTextMsgBody);
-                        if (m.get("self").toString().equals("false")) {
-                            mMessage.setSenderId("收到");
+                            mMessage.setBody(mTextMsgBody);
+                            if (m.get("self").toString().equals("false")) {
+                                mMessage.setSenderId("收到");
+                            }
+                            mReceiveMsgList.add(mMessage);
+                        } else {
+                            Message mMessage = getBaseSendMessage(MsgType.IMAGE);
+                            ImageMsgBody mTextMsgBody = new ImageMsgBody();
+                            mTextMsgBody.setThumbUrl(m.get("content").toString());
+                            mTextMsgBody.setName(m.get("username").toString());
+                            mTextMsgBody.setTime(m.get("time").toString());
+                            mTextMsgBody.setAvatar(m.get("avatar").toString());
+
+                            mMessage.setBody(mTextMsgBody);
+                            if (m.get("self").toString().equals("false")) {
+                                mMessage.setSenderId("收到");
+                            }
+                            mReceiveMsgList.add(mMessage);
                         }
-                        mReceiveMsgList.add(mMessage);
+
                     }
 
                     ChatDetailActivity.this.runOnUiThread(new Runnable() {

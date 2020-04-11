@@ -18,51 +18,88 @@
         android:visibility="gone" />
 
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp">
-
-        <com.example.awesomecurriculum.widget.CircleImageView
-            android:id="@+id/chat_item_header"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="5dp"
-            android:scaleType="centerInside"
-            android:src="@mipmap/ic_head_default_left" />
-
+        android:layout_marginRight="20dp">
 
         <RelativeLayout
-            android:id="@+id/chat_item_layout_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:layout_toRightOf="@id/chat_item_header"
+            android:layout_marginRight="10dp"
             android:gravity="right|center_vertical"
             android:orientation="horizontal">
 
-
-            <com.example.awesomecurriculum.widget.BubbleImageView
-                android:id="@+id/bivPic"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:scaleType="centerCrop"
-                 app:angle="6dp"
-                app:arrowHeight="8dp"
-                app:arrowLocation="left"
-                app:arrowPosition="15dp"
-                app:arrowWidth="5dp" />
-
-
+            <com.example.awesomecurriculum.widget.CircleImageView
+                android:id="@+id/chat_item_header"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_head_default_left" />
         </RelativeLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/chat_item_content_from_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Jacob"
+                    android:textSize="7dp" />
+
+                <TextView
+                    android:id="@+id/chat_item_content_from_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="2020-4-10 10:54"
+                    android:textSize="7dp" />
+
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/chat_item_layout_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:gravity="right|center_vertical"
+                android:orientation="horizontal">
+
+
+                <com.example.awesomecurriculum.widget.BubbleImageView
+                    android:id="@+id/bivPic"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="7dp"
+                    android:scaleType="centerCrop"
+                    app:angle="6dp"
+                    app:arrowHeight="8dp"
+                    app:arrowLocation="left"
+                    app:arrowPosition="15dp"
+                    app:arrowWidth="5dp" />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </LinearLayout>

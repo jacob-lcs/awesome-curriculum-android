@@ -145,6 +145,11 @@ public class ChatAdapter extends BaseQuickAdapter<Message, BaseViewHolder> {
 
         } else if (item.getMsgType().equals(MsgType.IMAGE)) {
             ImageMsgBody msgBody = (ImageMsgBody) item.getBody();
+            helper.setText(R.id.chat_item_content_from_name, msgBody.getName());
+            helper.setText(R.id.chat_item_content_from_time, msgBody.getTime());
+            if (msgBody.getAvatar() != null && msgBody.getAvatar().length() != 0) {
+                GlideUtils.loadHeadImage(mContext, msgBody.getAvatar(), (ImageView) helper.getView(R.id.chat_item_header));
+            }
             if (TextUtils.isEmpty(msgBody.getThumbPath())) {
                 GlideUtils.loadChatImage(mContext, msgBody.getThumbUrl(), (ImageView) helper.getView(R.id.bivPic));
             } else {

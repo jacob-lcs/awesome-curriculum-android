@@ -12,6 +12,9 @@ public class ImageMsgBody extends FileMsgBody {
     private int height;
     //宽度
     private int width;
+    private String name;
+    private String time;
+    private String avatar;
 
 
     public String getThumbPath() {
@@ -56,6 +59,34 @@ public class ImageMsgBody extends FileMsgBody {
 
 
     public ImageMsgBody() {
+    }
+
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
 
