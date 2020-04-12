@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         loadData();
     }
 
-    private void init(){
+    private void init() {
         settings = findViewById(R.id.settings);
         imports = findViewById(R.id.imports);
         chat = findViewById(R.id.chat);
@@ -93,9 +93,10 @@ public class MainActivity extends AppCompatActivity {
         toSettings();
         toAddCourse();
         toChat();
+        toImports();
     }
 
-    private void toSettings(){
+    private void toSettings() {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void toChat(){
+    private void toChat() {
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +116,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void toAddCourse(){
+    private void toImports() {
+        imports.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SelectSchoolActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void toAddCourse() {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         sqLiteDatabase.execSQL("insert into updateTime (id, time) values (1, " + String.valueOf(updateTimeMap.get("time")) + ")");
                     }
-                    if(last == null){
+                    if (last == null) {
                         last = "0";
                     }
                     Log.d("course", String.valueOf(updateTimeMap.get("time")));
-                    Log.d("login", String.valueOf("测试"+ updateTimeMap.get("time"))+"测试"+ last);
+                    Log.d("login", String.valueOf("测试" + updateTimeMap.get("time")) + "测试" + last);
                     if (last.compareTo(String.valueOf(updateTimeMap.get("time"))) < 0) {
                         res = OkHttpUtil.getDataSync("https://coursehelper.online:3000/api/course/queryCourse?token=" + token);
                         map = gson.fromJson(res.body().string(), map.getClass());
@@ -260,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void clearItemCourseView(){
+    private void clearItemCourseView() {
         RelativeLayout monday = findViewById(R.id.monday);
         monday.removeAllViews();
         RelativeLayout tuesday = findViewById(R.id.tuesday);
@@ -338,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void toEditDetail(String courseName, int week, int start, int end, String teacher, String classRoom, String color, int id, String courseNo){
+    private void toEditDetail(String courseName, int week, int start, int end, String teacher, String classRoom, String color, int id, String courseNo) {
         final CourseDetailFragment editNameDialogFragment = CourseDetailFragment.newInstance(courseName, week, start, end, teacher, classRoom, color, id, courseNo);
         editNameDialogFragment.show(getSupportFragmentManager(), "edit");
     }

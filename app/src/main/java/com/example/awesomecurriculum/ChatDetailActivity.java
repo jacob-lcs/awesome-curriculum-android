@@ -537,8 +537,6 @@ public class ChatDetailActivity extends AppCompatActivity implements SwipeRefres
                         };
                         ThreadPoolExecutor response = ThreadPoolManager.getInstance().execute(command);
                         response.shutdown();
-//                        LogUtil.d("获取图片路径成功:" + media.getPath());
-//                        sendImageMessage(media);
                     }
                     break;
                 default:

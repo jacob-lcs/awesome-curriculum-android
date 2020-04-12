@@ -1,5 +1,7 @@
 package com.example.awesomecurriculum.data.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class Course implements Serializable {
@@ -98,4 +100,17 @@ public class Course implements Serializable {
         return this.courseNo;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return this.getId() + "-"
+                + this.getCourseNo() + "-"
+                + this.getCourseName() + "-"
+                + this.getClassRoom() + "-"
+                + this.getTeacher() + "-"
+                + this.getColor() + "-"
+                + this.getWeek() + "-"
+                + this.getStart() + "-"
+                + this.getEnd();
+    }
 }
